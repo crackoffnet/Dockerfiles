@@ -4,7 +4,7 @@
 
 FROM nginx
 MAINTAINER garegin.ayvazyan@ucom.am, garegin.ayvazyan@hotmail.com
-RUN apt-get update && apt-get install -y git curl wget net-tools vim elinks sudo gnupg gnupg2 gnupg1 software-properties-common alien
+RUN apt-get update && apt-get install -y git curl wget net-tools vim elinks sudo gnupg gnupg2 gnupg1 software-properties-common alien libaio1
 RUN curl --silent --location https://deb.nodesource.com/setup_6.x | sudo bash -
 RUN apt-get install -y nodejs build-essential npm
 RUN add-apt-repository ppa:webupd8team/java -y && \
@@ -12,6 +12,17 @@ RUN add-apt-repository ppa:webupd8team/java -y && \
     echo oracle-java9-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
     apt-get install -y --allow-unauthenticated oracle-java9-installer && \
     apt-get clean
+WORKDIR /tmp/
+RUN wget https://www.dropbox.com/s/ymxkvi4ncd449uy/oracle-instantclient11.1-basic-11.1.0.7.0-1.x86_64.rpm?dl=0 https://www.dropbox.com/s/3wcmnpvlibcch68/oracle-instantclient11.1-devel-11.1.0.7.0-1.x86_64.rpm?dl=0 https://www.dropbox.com/s/ggoerlv0yuvt2gz/oracle-instantclient11.1-sqlplus-11.1.0.7.0-1.x86_64.rpm?dl=0
+RUN alien -i oracle-instantclient11.1-basic-11.1.0.7.0-1.x86_64.rpm && \
+             oracle-instantclient11.1-devel-11.1.0.7.0-1.x86_64.rpm && \
+             oracle-instantclient11.1-sqlplus-11.1.0.7.0-1.x86_64.rpm
+RUN echo "/usr/lib/oracle/11.1/client64/lib/" > /etc/ld.so.conf.d/oracle.conf && chmod o+r /etc/ld.so.conf.d/oracle.conf && ldconfig
+RUN echo "export ORACLE_HOME=/usr/lib/oracle/11.1/client64\n
+          export PATH=$PATH:$ORACLE_HOME/bin\n
+          export\n
+          LD_LIBRARY_PATH=/usr/lib/oracle/11.1/client64/lib/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" > /etc/profile.d/oracle.sh && chmod o+r /etc/profile.d/oracle.sh
+
 RUN git clone https://github.com/crackoffnet/vas_app.git /tmp/vas_app/
 WORKDIR /tmp/vas_app/autoweb/
 RUN npm install
@@ -24,4 +35,5 @@ RUN cp ../vta*.jar /usr/share/nginx/html/backend_jars/
 RUN nohup java -jar /usr/share/nginx/html/backend_jars/vta-oar.jar > /var/log/vta-oar.log &
 RUN nohup java -jar /usr/share/nginx/html/backend_jars/vta-vas.jar > /var/log/vta-vas.log &
 RUN cp -avr /tmp/vas_app/autoweb/dist/. /usr/share/nginx/html
+
 EXPOSE 80 8080 9000
