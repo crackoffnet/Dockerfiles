@@ -13,15 +13,15 @@ RUN add-apt-repository ppa:webupd8team/java -y && \
     apt-get install -y --allow-unauthenticated oracle-java9-installer && \
     apt-get clean
 WORKDIR /tmp/
-RUN wget https://www.dropbox.com/s/ymxkvi4ncd449uy/oracle-instantclient11.1-basic-11.1.0.7.0-1.x86_64.rpm?dl=0 https://www.dropbox.com/s/3wcmnpvlibcch68/oracle-instantclient11.1-devel-11.1.0.7.0-1.x86_64.rpm?dl=0 https://www.dropbox.com/s/ggoerlv0yuvt2gz/oracle-instantclient11.1-sqlplus-11.1.0.7.0-1.x86_64.rpm?dl=0
+RUN wget https://drive.google.com/open?id=0B_if2uywtYpwX3g2Qm02WFFiY1k https://drive.google.com/open?id=0B_if2uywtYpwUDNWUEg0b3VCcE0 https://drive.google.com/open?id=0B_if2uywtYpwcXlRWXhKZEk4Q0k
 RUN alien -i oracle-instantclient11.1-basic-11.1.0.7.0-1.x86_64.rpm && \
              oracle-instantclient11.1-devel-11.1.0.7.0-1.x86_64.rpm && \
              oracle-instantclient11.1-sqlplus-11.1.0.7.0-1.x86_64.rpm
-RUN echo "/usr/lib/oracle/11.1/client64/lib/" > /etc/ld.so.conf.d/oracle.conf && chmod o+r /etc/ld.so.conf.d/oracle.conf && ldconfig
+RUN echo "/usr/lib/oracle/11.1/client64/lib/" >> /etc/ld.so.conf.d/oracle.conf && chmod o+r /etc/ld.so.conf.d/oracle.conf && ldconfig
 RUN echo "export ORACLE_HOME=/usr/lib/oracle/11.1/client64\n
           export PATH=$PATH:$ORACLE_HOME/bin\n
           export\n
-          LD_LIBRARY_PATH=/usr/lib/oracle/11.1/client64/lib/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" > /etc/profile.d/oracle.sh && chmod o+r /etc/profile.d/oracle.sh
+          LD_LIBRARY_PATH=/usr/lib/oracle/11.1/client64/lib/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> /etc/profile.d/oracle.sh && chmod o+r /etc/profile.d/oracle.sh
 
 RUN git clone https://github.com/crackoffnet/vas_app.git /tmp/vas_app/
 WORKDIR /tmp/vas_app/autoweb/
