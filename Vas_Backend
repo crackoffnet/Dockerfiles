@@ -4,7 +4,7 @@
 
 FROM nginx
 MAINTAINER garegin.ayvazyan@ucom.am, garegin.ayvazyan@hotmail.com
-RUN apt-get update && apt-get install -y git curl wget net-tools vim elinks sudo gnupg gnupg2 gnupg1 software-properties-common
+RUN apt-get update && apt-get install -y git curl wget net-tools vim elinks sudo gnupg gnupg2 gnupg1 software-properties-common alien
 RUN curl --silent --location https://deb.nodesource.com/setup_6.x | sudo bash -
 RUN apt-get install -y nodejs build-essential npm
 RUN add-apt-repository ppa:webupd8team/java -y && \
@@ -24,3 +24,4 @@ RUN cp ../vta*.jar /usr/share/nginx/html/backend_jars/
 RUN nohup java -jar /usr/share/nginx/html/backend_jars/vta-oar.jar > /var/log/vta-oar.log &
 RUN nohup java -jar /usr/share/nginx/html/backend_jars/vta-vas.jar > /var/log/vta-vas.log &
 RUN cp -avr /tmp/vas_app/autoweb/dist/. /usr/share/nginx/html
+EXPOSE 80 8080 9000
