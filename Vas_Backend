@@ -14,11 +14,16 @@ RUN add-apt-repository ppa:webupd8team/java -y && \
     apt-get clean
 RUN git clone https://github.com/crackoffnet/vas_app.git /tmp/vas_app/
 WORKDIR /tmp/vas_app/
-RUN alien -i oracle-instantclient11.1-basic-11.1.0.7.0-1.x86_64.rpm
-RUN alien -i oracle-instantclient11.1-devel-11.1.0.7.0-1.x86_64.rpm
-RUN alien -i oracle-instantclient11.1-sqlplus-11.1.0.7.0-1.x86_64.rpm
-RUN chmod +x oracle_paths.sh && ./oracle_paths.sh
-RUN chmod o+r /etc/ld.so.conf.d/oracle.conf /etc/profile.d/oracle.sh && ldconfig
+RUN alien -i oracle-instantclient11.2-basic-11.2.0.3.0-1.x86_64.rpm
+RUN alien -i oracle-instantclient11.2-devel-11.2.0.3.0-1.x86_64.rpm
+RUN alien -i oracle-instantclient11.2-jdbc-11.2.0.3.0-1.x86_64.rpm
+RUN alien -i oracle-instantclient11.2-sqlplus-11.2.0.3.0-1.x86_64.rpm
+ENV ORACLE_HOME=/usr/lib/oracle/11.2/client64
+ENV PATH=$PATH:$ORACLE_HOME/bin
+ENV LD_LIBRARY_PATH=/usr/lib/oracle/11.2/client64/lib/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+#RUN chmod +x oracle_paths.sh && ./oracle_paths.sh
+#RUN chmod o+r /etc/ld.so.conf.d/oracle.conf && ldconfig
+#RUN chmod o+r /etc/profile.d/oracle.sh && ldconfig
 WORKDIR /tmp/vas_app/autoweb/
 RUN npm install
 RUN npm install --global grunt
@@ -27,7 +32,7 @@ RUN bower install --allow-root
 RUN grunt build
 RUN mkdir /usr/share/nginx/html/backend_jars
 RUN cp ../vta*.jar /usr/share/nginx/html/backend_jars/
-RUN nohup java -jar /usr/share/nginx/html/backend_jars/vta-oar.jar > /var/log/vta-oar.log &
-RUN nohup java -jar /usr/share/nginx/html/backend_jars/vta-vas.jar > /var/log/vta-vas.log &
+RUN java -jar /usr/share/nginx/html/backend_jars/vta-oar.jar > /var/log/vta-oar.log &
+RUN java -jar /usr/share/nginx/html/backend_jars/vta-vas.jar > /var/log/vta-vas.log &
 RUN cp -avr /tmp/vas_app/autoweb/dist/. /usr/share/nginx/html
-EXPOSE 80 8080 9000
+EXPOSE 80 9000
