@@ -27,7 +27,7 @@ ENV LD_LIBRARY_PATH=/usr/lib/oracle/11.2/client64/lib/${LD_LIBRARY_PATH:+:$LD_LI
 WORKDIR /tmp/vas_app/autoweb/
 RUN npm install
 RUN npm install --global grunt
-RUN npm install --global grunt-cli bower
+RUN npm install --global grunt-cli bower grunt-karma karma karma-phantomjs-launcher karma-jasmine jasmine-core phantomjs-prebuilt --save-dev
 RUN bower install --allow-root
 RUN grunt build
 RUN mkdir /usr/share/nginx/html/backend_jars
@@ -35,4 +35,4 @@ RUN cp ../vta*.jar /usr/share/nginx/html/backend_jars/
 RUN java -jar /usr/share/nginx/html/backend_jars/vta-oar.jar > /var/log/vta-oar.log &
 RUN java -jar /usr/share/nginx/html/backend_jars/vta-vas.jar > /var/log/vta-vas.log &
 RUN cp -avr /tmp/vas_app/autoweb/dist/. /usr/share/nginx/html
-EXPOSE 80 9000
+EXPOSE 80 8080 8090
