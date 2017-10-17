@@ -1,3 +1,7 @@
+# Nginx:latest with VAS troubleshooting services installed.
+# Build image with:  docker build -t .
+
+
 FROM nginx
 MAINTAINER garegin.ayvazyan@ucom.am, garegin.ayvazyan@hotmail.com
 RUN apt-get update && apt-get install -y git curl wget net-tools vim elinks sudo gnupg gnupg2 gnupg1 software-properties-common alien libaio1
